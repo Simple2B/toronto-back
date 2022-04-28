@@ -32,5 +32,7 @@ def get_gas_mileage(model: str, make: str, year: int):
     lines = data.loc[
         (data["Make"] == make) & (data["Model"] == model) & (data["Year"] == year)
     ]
+    if not len(lines):
+        return None
     mean = lines[["City", "Highway"]].mean()
     return (mean.City + mean.Highway) / 2
