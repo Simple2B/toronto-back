@@ -41,7 +41,7 @@ def get_gas_mileage(model: str, make: str, year: int):
 
 
 def get_coords(start: str, end: str):
-    url = f"https://maps.googleapis.com/maps/api/distancematrix/json?origins={start}&destinations={end}&units=imperial&key=AIzaSyBNR4gaeTTLzWBDmBTUF4LLzWbcDrWHBis"
+    url = f"https://maps.googleapis.com/maps/api/distancematrix/json?origins={start}&destinations={end}&units=imperial&key=Api_key"
 
     payload={}
     headers = {}
