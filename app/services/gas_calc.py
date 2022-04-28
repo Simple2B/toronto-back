@@ -1,5 +1,7 @@
 import os
 import pandas as pd
+import requests
+import json
 
 from app.config import settings
 
@@ -36,3 +38,19 @@ def get_gas_mileage(model: str, make: str, year: int):
         return None
     mean = lines[["City", "Highway"]].mean()
     return (mean.City + mean.Highway) / 2
+
+
+def get_coords(start: str, end: str):
+    url = f"https://maps.googleapis.com/maps/api/distancematrix/json?origins={start}&destinations={end}&units=imperial&key=AIzaSyBNR4gaeTTLzWBDmBTUF4LLzWbcDrWHBis"
+
+    payload={}
+    headers = {}
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    json_object = json.loads(response.text)
+
+    dist = json_object['rows'][0]['elements'][0]['distance']['text']
+    duration = json_object['rows'][0]['elements'][0]['duration']['text']
+
+    return [dist, duration]
