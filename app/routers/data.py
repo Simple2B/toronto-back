@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.schemas import CalculationData, CalculationResult
+from app.schemas import CalculationResult
 
 
 router = APIRouter()

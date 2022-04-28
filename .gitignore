@@ -18,3 +18,4 @@ Pipfile
 
 database-*.sqlite3
 *.csv
+.DS_Store

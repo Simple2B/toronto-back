@@ -15,6 +15,4 @@ for file in file_list:
 
 excl_merged = pd.concat(excl_list, ignore_index=True)
 
-excl_merged.to_excel('Merged Canadian Prices.xlsx', index=False)
-
-
+excl_merged.to_excel("Merged Canadian Prices.xlsx", index=False)

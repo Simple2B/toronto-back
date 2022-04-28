@@ -1,10 +1,9 @@
-
-Canadian:
-for gas in gaslist:
-    r: x = (t/v) * rg
-    m: x = (t/v) * mg
-    p: x = (t/v) * pg
-    d: x = (t/v) * dg
+# Canadian:
+# for gas in gaslist:
+#     r: x = (t / v) * rg
+#     m: x = (t / v) * mg
+#     p: x = (t / v) * pg
+#     d: x = (t / v) * dg
 
 # Where:
 #   r/rg = Regular Gas
@@ -14,5 +13,3 @@ for gas in gaslist:
 #   x = Cost of Trip
 #   t = Distance
 #   v = Vehicle Mileage
-
-
