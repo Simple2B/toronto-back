@@ -12,4 +12,5 @@ class CalculationData(VehicleData):
 
 
 class CalculationResult(BaseModel):
-    gas: float
+    gas_price: float
+    mileage: float

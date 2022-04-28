@@ -23,3 +23,14 @@ def get_gas_cost(gas_file_name: str, town_name: str):
 
     if town_name in town_price:
         return town_price[town_name]
+
+
+def get_gas_mileage(model: str, make: str, year: int):
+    FILE_NAME = os.path.join("vehicle", "vehicles.xlsx")
+    data = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_NAME))
+    assert len(data)
+    lines = data.loc[
+        (data["Make"] == make) & (data["Model"] == model) & (data["Year"] == year)
+    ]
+    mean = lines[["City", "Highway"]].mean()
+    return (mean.City + mean.Highway) / 2
