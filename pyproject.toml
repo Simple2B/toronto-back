@@ -13,6 +13,7 @@ pandas = "^1.4.2"
 invoke = "^1.7.0"
 pydotenv = "^0.0.7"
 openpyxl = "^3.0.9"
+pydantic = {extras = ["dotenv"], version = "^1.9.0"}
 
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"
