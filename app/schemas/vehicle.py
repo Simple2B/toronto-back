@@ -15,3 +15,4 @@ class CalculationResult(BaseModel):
     gas_price: float
     mileage: float
     coords: list
+    make_list: list

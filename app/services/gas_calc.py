@@ -40,6 +40,37 @@ def get_gas_mileage(model: str, make: str, year: int):
     return (mean.City + mean.Highway) / 2
 
 
+def get_make_list():
+    FILE_NAME = os.path.join("vehicle", "vehicles.xlsx")
+    FILE_INFO = os.path.join("vehicle", "vehicles_year.xlsx")
+
+    data = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_NAME))
+    data_two = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_INFO))
+
+    year = data_two["Year"].values.tolist()
+    car = data["Make"].values.tolist()
+    mod = data["Model"].values.tolist()
+
+    mylist = list(dict.fromkeys(car))
+    modList = list(dict.fromkeys(mod))
+    yearList = sorted(list(dict.fromkeys(year)))
+
+    li = []
+    li2 = []
+    list_year = []
+    for c in mylist:
+        li.append(dict(value=c, label=c))
+
+    for c in modList:
+        li2.append(dict(value=c, label=c))
+
+    for c in yearList:
+        list_year.append(dict(value=c, label=c))
+
+
+    return [li, li2, list_year]
+
+
 def get_coords(start: str, end: str):
     url = f"https://maps.googleapis.com/maps/api/distancematrix/json?origins={start}&destinations={end}&units=imperial&key=Api_key"
 
@@ -50,7 +81,8 @@ def get_coords(start: str, end: str):
 
     json_object = json.loads(response.text)
 
-    dist = json_object['rows'][0]['elements'][0]['distance']['text']
-    duration = json_object['rows'][0]['elements'][0]['duration']['text']
+    # dist = json_object['rows'][0]['elements'][0]['distance']['value'] / 10000
+    dist = format(json_object['rows'][0]['elements'][0]['distance']['value'] / 10000, ".2f")
+    duration = json_object['rows'][0]['elements'][0]['duration']['value']
 
     return [dist, duration]
