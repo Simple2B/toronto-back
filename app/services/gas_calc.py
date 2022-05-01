@@ -40,35 +40,36 @@ def get_gas_mileage(model: str, make: str, year: int):
     return (mean.City + mean.Highway) / 2
 
 
-def get_make_list():
+def get_vehicle_data_list():
     FILE_NAME = os.path.join("vehicle", "vehicles.xlsx")
     FILE_INFO = os.path.join("vehicle", "vehicles_year.xlsx")
 
     data = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_NAME))
     data_two = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_INFO))
 
+
+    model = data["Model"].values.tolist()
+    make = data["Make"].values.tolist()
     year = data_two["Year"].values.tolist()
-    car = data["Make"].values.tolist()
-    mod = data["Model"].values.tolist()
 
-    mylist = list(dict.fromkeys(car))
-    modList = list(dict.fromkeys(mod))
-    yearList = sorted(list(dict.fromkeys(year)))
+    sorted_model = list(dict.fromkeys(model))
+    sortec_make = list(dict.fromkeys(make))
+    sorted_year = sorted(list(dict.fromkeys(year)))
 
-    li = []
-    li2 = []
-    list_year = []
-    for c in mylist:
-        li.append(dict(value=c, label=c))
+    model_list = []
+    make_list = []
+    year_list = []
+    for index in sorted_model:
+        model_list.append(dict(value=index, label=index))
 
-    for c in modList:
-        li2.append(dict(value=c, label=c))
+    for index in sortec_make:
+        make_list.append(dict(value=index, label=index))
 
-    for c in yearList:
-        list_year.append(dict(value=c, label=c))
+    for index in sorted_year:
+        year_list.append(dict(value=index, label=index))
 
 
-    return [li, li2, list_year]
+    return [model_list, make_list, year_list]
 
 
 def get_coords(start: str, end: str):
@@ -81,7 +82,6 @@ def get_coords(start: str, end: str):
 
     json_object = json.loads(response.text)
 
-    # dist = json_object['rows'][0]['elements'][0]['distance']['value'] / 10000
     dist = format(json_object['rows'][0]['elements'][0]['distance']['value'] / 10000, ".2f")
     duration = json_object['rows'][0]['elements'][0]['duration']['value']
 
