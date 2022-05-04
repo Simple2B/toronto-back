@@ -9,7 +9,7 @@ BASE_DIR = os.path.abspath(os.path.join(BASE_DIR, "../.."))
 
 class Settings(BaseSettings):
     SERVER_NAME: str = "Toronto"
-    SERVER_HOST: AnyHttpUrl = "http://127.0.0.1:8000"
+    SERVER_HOST: AnyHttpUrl = "https://toronto.simple2b.net"
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
 
     JWT_SECRET: str = "secret_key"
