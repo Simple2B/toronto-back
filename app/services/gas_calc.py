@@ -7,6 +7,9 @@ from app.config import settings
 
 
 def get_gas_cost(gas_file_name: str, town_name: str):
+    if town_name == "UK" or town_name == "United Kingdom":
+        return 204
+
     if not len(gas_file_name):
         return ''
 

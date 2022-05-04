@@ -13,7 +13,16 @@ router = APIRouter()
 def gas_consumption(model: str, make: str, year: int, town: str, distance: str, gasType: str):
     """Calculate gas consumption"""
 
-    kilometres = int(re.search(r'\d+', distance).group())
+    # get distance value from string
+    kilometres = float(re.findall("[-+]?\d*\.\d+|\d+", distance)[0])
+
+    # get distance type from string
+    if len(distance) > 1:
+        distance_type = re.search(r'[a-zA-Z]+', distance).group()
+
+        # convert miles to kilometres
+        if distance_type == 'miles':
+            kilometres = float(re.findall("[-+]?\d*\.\d+|\d+", distance)[0]) * 1.60934
 
     cost = get_gas_cost(gas_file_name=gasType, town_name=town) or 0
     mileage = get_gas_mileage(model=model, make=make, year=year) or 0
