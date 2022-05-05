@@ -1,7 +1,5 @@
 import os
 import pandas as pd
-import requests
-import json
 
 from app.config import settings
 
@@ -61,33 +59,46 @@ def get_gas_mileage(model: str, make: str, year: int):
     return kpl
 
 
-def get_vehicle_data_list():
+def get_make_list():
     FILE_NAME = os.path.join("vehicle", "vehicles.xlsx")
-    FILE_INFO = os.path.join("vehicle", "vehicles_year.xlsx")
-
     data = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_NAME))
-    data_two = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_INFO))
-
-    model = data["Model"].values.tolist()
     make = sorted(data["Make"].values.tolist())
+
+    # remove duplicates
+    sorted_make = list(dict.fromkeys(make))
+
+    make_list = []
+    for index in sorted_make:
+        make_list.append(dict(value=index, label=index))
+
+    return make_list
+
+
+def get_model_list(make: str):
+    FILE_NAME = os.path.join("vehicle", "vehicles.xlsx")
+    data = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_NAME))
+    make_model = data[data.columns[1:3]].values.tolist()
+
+    filter_by_make = [i for i in make_model if i[0] == make]
+
+    model_list = []
+    for index in filter_by_make:
+        model_list.append(dict(value=index[1], label=index[1]))
+
+    return model_list
+
+
+def get_vehicle_year():
+    FILE_INFO = os.path.join("vehicle", "vehicles_year.xlsx")
+    data_two = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_INFO))
     year = data_two["Year"].values.tolist()
 
     # remove duplicates
-    sorted_model = list(dict.fromkeys(model))
-    sortec_make = list(dict.fromkeys(make))
     sorted_year = sorted(list(dict.fromkeys(year)), reverse=True)
 
     # create list of dicts for frontend selector
-    model_list = []
-    make_list = []
     year_list = []
-    for index in sorted_model:
-        model_list.append(dict(value=index, label=index))
-
-    for index in sortec_make:
-        make_list.append(dict(value=index, label=index))
-
     for index in sorted_year:
         year_list.append(dict(value=index, label=index))
 
-    return [model_list, make_list, year_list]
+    return year_list

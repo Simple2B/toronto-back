@@ -13,5 +13,16 @@ class CalculationData(VehicleData):
 
 class CalculationResult(BaseModel):
     gas_price: float
-    vehicle_data_list: list
     c02_kg: float
+
+
+class MakeList(BaseModel):
+    filterer_make_list: list
+
+
+class ModelList(BaseModel):
+    filterer_model_list: list
+
+
+class YearList(BaseModel):
+    vehicle_year_list: list
