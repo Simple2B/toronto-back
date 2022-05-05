@@ -2,7 +2,7 @@ version: "3.8"
 services:
   app:
     build: .
-    command: poetry run uvicorn --port 5000 --host 0.0.0.0 --workers 2 app.main:app
+    command: bash start.sh
     restart: always
     ports:
       - 127.0.0.1:${APP_LOCAL_PORT}:5000
