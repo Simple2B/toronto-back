@@ -7,7 +7,10 @@ from app.config import settings
 
 
 def get_gas_cost(gas_file_name: str, town_name: str):
+    # Gasoline Prices in the United Kingdom decreased to 2.04 USD/Liter in April from 2.14 USD/Liter in March of 2022
+    # This info take from https://tradingeconomics.com/united-kingdom/gasoline-prices
     if town_name == "UK" or town_name == "United Kingdom":
+        # cents per liter
         return 204
 
     if not len(gas_file_name):
@@ -66,13 +69,15 @@ def get_vehicle_data_list():
     data_two = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_INFO))
 
     model = data["Model"].values.tolist()
-    make = data["Make"].values.tolist()
+    make = sorted(data["Make"].values.tolist())
     year = data_two["Year"].values.tolist()
 
+    # remove duplicates
     sorted_model = list(dict.fromkeys(model))
     sortec_make = list(dict.fromkeys(make))
     sorted_year = sorted(list(dict.fromkeys(year)), reverse=True)
 
+    # create list of dicts for frontend selector
     model_list = []
     make_list = []
     year_list = []
@@ -84,6 +89,5 @@ def get_vehicle_data_list():
 
     for index in sorted_year:
         year_list.append(dict(value=index, label=index))
-
 
     return [model_list, make_list, year_list]

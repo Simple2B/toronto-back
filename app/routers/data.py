@@ -14,7 +14,7 @@ def gas_consumption(model: str, make: str, year: int, town: str, distance: str, 
     """Calculate gas consumption"""
 
     # get distance value from string
-    kilometres = float(re.findall("[-+]?\d*\.\d+|\d+", distance)[0])
+    kilometres = float(re.sub('[^0-9.]', "", distance).replace(",", ""))
 
     # get distance type from string
     if len(distance) > 1:
