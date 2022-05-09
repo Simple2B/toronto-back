@@ -67,6 +67,7 @@ def get_make_list():
     # remove duplicates
     sorted_make = list(dict.fromkeys(make))
 
+    # this is for the selector on the frontend to display the data
     make_list = []
     for index in sorted_make:
         make_list.append(dict(value=index, label=index))
@@ -79,8 +80,13 @@ def get_model_list(make: str):
     data = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_NAME))
     make_model = data[data.columns[1:3]].values.tolist()
 
-    filter_by_make = [i for i in make_model if i[0] == make]
+    # remove duplicates from list of lists
+    remover_model_dup = [list(tupl) for tupl in { tuple(item) for item in make_model }]
 
+    # get models for a specific car
+    filter_by_make = [i for i in remover_model_dup if i[0] == make]
+
+    # this is for the selector on the frontend to display the data
     model_list = []
     for index in filter_by_make:
         model_list.append(dict(value=index[1], label=index[1]))
@@ -96,7 +102,7 @@ def get_vehicle_year():
     # remove duplicates
     sorted_year = sorted(list(dict.fromkeys(year)), reverse=True)
 
-    # create list of dicts for frontend selector
+    # this is for the selector on the frontend to display the data
     year_list = []
     for index in sorted_year:
         year_list.append(dict(value=index, label=index))
