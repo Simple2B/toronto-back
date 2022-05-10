@@ -57,14 +57,6 @@ tests = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)"
 tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "cloudpickle"]
 
 [[package]]
-name = "beautifulsoup"
-version = "3.2.2"
-description = "Screen-scraping library"
-category = "main"
-optional = false
-python-versions = "*"
-
-[[package]]
 name = "black"
 version = "22.3.0"
 description = "The uncompromising code formatter."
@@ -477,6 +469,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "pyxlsb"
+version = "1.0.9"
+description = "Excel 2007-2010 Binary Workbook (xlsb) parser"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "requests"
 version = "2.27.1"
 description = "Python HTTP for Humans."
@@ -641,7 +641,7 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "7b793d65057039cb62375679b4273fcd56ff207667ae6db6a6589c9315a18a82"
+content-hash = "40825ffd4f21841215f55c3894855e3c356a2863386653b778a1072eee78af1b"
 
 [metadata.files]
 anyio = [
@@ -663,10 +663,6 @@ atomicwrites = [
 attrs = [
     {file = "attrs-21.4.0-py2.py3-none-any.whl", hash = "sha256:2d27e3784d7a565d36ab851fe94887c5eccd6a463168875832a1be79c82828b4"},
     {file = "attrs-21.4.0.tar.gz", hash = "sha256:626ba8234211db98e869df76230a137c4c40a12d72445c45d5f5b716f076e2fd"},
-]
-beautifulsoup = [
-    {file = "BeautifulSoup-3.2.2-py2-none-any.whl", hash = "sha256:d31413d71f6ca027ff6b06c891b62ee8ff48267ccd969f881d810e5d1fe49565"},
-    {file = "BeautifulSoup-3.2.2.tar.gz", hash = "sha256:a04169602bff6e3138b1259dbbf491f5a27f9499dea9a8fbafd48843f9d89970"},
 ]
 black = [
     {file = "black-22.3.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:2497f9c2386572e28921fa8bec7be3e51de6801f7459dffd6e62492531c47e09"},
@@ -974,6 +970,10 @@ python-dotenv = [
 pytz = [
     {file = "pytz-2022.1-py2.py3-none-any.whl", hash = "sha256:e68985985296d9a66a881eb3193b0906246245294a881e7c8afe623866ac6a5c"},
     {file = "pytz-2022.1.tar.gz", hash = "sha256:1e760e2fe6a8163bc0b3d9a19c4f84342afa0a2affebfaa84b01b978a02ecaa7"},
+]
+pyxlsb = [
+    {file = "pyxlsb-1.0.9-py2.py3-none-any.whl", hash = "sha256:af2daeba799de62eaa05f434607569c1dc39268ad8a0efa5343e027e690289e6"},
+    {file = "pyxlsb-1.0.9.tar.gz", hash = "sha256:286f08a55703338eac470fa7fecd6ab8b44dcb0eea8a3eb3ef503ba226e4966a"},
 ]
 requests = [
     {file = "requests-2.27.1-py2.py3-none-any.whl", hash = "sha256:f22fa1e554c9ddfd16e6e41ac79759e17be9e492b3587efa038054674760e72d"},

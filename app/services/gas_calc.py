@@ -14,7 +14,6 @@ def get_gas_cost(gas_file_name: str, town_name: str):
     if not len(gas_file_name):
         return ''
 
-    file_path = os.path.join(settings.DATA_DIR, gas_file_name)
     data = pd.read_excel(os.path.join(settings.DATA_DIR, gas_file_name))
     # assert data
     town_price = {}
@@ -25,12 +24,15 @@ def get_gas_cost(gas_file_name: str, town_name: str):
     town_num = (len(data.columns) - HORIZON_OFFSET) // TOWN_OFFSET
     last_date_line_index = len(data) - 2
 
+    # calculate price for each city
     for town_index in range(town_num):
         town_column = data[data.columns[HORIZON_OFFSET + (town_index * TOWN_OFFSET)]]
         name = town_column[VERTICAL_TOWN_OFFSET]
         price = town_column[last_date_line_index]
         town_price[name] = price
 
+    # if none of the 8 cities is selected, calculate the average price
+    # between them for any others on the planet
     if town_name == "Average":
         avg = round(sum(town_price.values()) / town_num, 2)
         return avg
@@ -41,11 +43,13 @@ def get_gas_cost(gas_file_name: str, town_name: str):
 
 def get_gas_mileage(model: str, make: str, year: int):
     """Get Miles per gallon (MPL)"""
-    FILE_NAME = os.path.join("vehicle", "vehicles.xlsx")
-    data = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_NAME))
-    assert len(data)
-    lines = data.loc[
-        (data["Make"] == make) & (data["Model"] == model) & (data["Year"] == year)
+    # FILE_NAME = os.path.join("vehicle", "vehicles.xlsx")
+    # data = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_NAME))
+    data_frame = pd.read_pickle('all_vehicles.pkl')
+
+    assert len(data_frame)
+    lines = data_frame.loc[
+        (data_frame["Make"] == make) & (data_frame["Model"] == model) & (data_frame["Year"] == year)
     ]
     if not len(lines):
         return None
@@ -60,9 +64,12 @@ def get_gas_mileage(model: str, make: str, year: int):
 
 
 def get_make_list():
-    FILE_NAME = os.path.join("vehicle", "vehicles.xlsx")
-    data = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_NAME))
-    make = sorted(data["Make"].values.tolist())
+    # FILE_NAME = os.path.join("vehicle", "all_vehicles-binary.xlsb")
+    # data = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_NAME))
+
+    # data.to_pickle('all_vehicles.pkl')    #to save the dataframe to file.pkl
+    data_frame = pd.read_pickle('all_vehicles.pkl') #to load file.pkl back to the dataframe
+    make = sorted(data_frame["Make"].values.tolist())
 
     # remove duplicates
     sorted_make = list(dict.fromkeys(make))
@@ -76,15 +83,18 @@ def get_make_list():
 
 
 def get_model_list(make: str):
-    FILE_NAME = os.path.join("vehicle", "vehicles.xlsx")
-    data = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_NAME))
-    make_model = data[data.columns[1:3]].values.tolist()
+    # FILE_NAME = os.path.join("vehicle", "vehicles.xlsx")
+    # data = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_NAME))
+    data_frame = pd.read_pickle('all_vehicles.pkl')
+
+    # Select second and third columns (make, model)
+    make_model = data_frame[data_frame.columns[1:3]].values.tolist()
 
     # remove duplicates from list of lists
     remover_model_dup = [list(tupl) for tupl in { tuple(item) for item in make_model }]
 
-    # get models for a specific car
-    filter_by_make = [i for i in remover_model_dup if i[0] == make]
+    # get models for a specific car and sort
+    filter_by_make = sorted([i for i in remover_model_dup if i[0] == make])
 
     # this is for the selector on the frontend to display the data
     model_list = []
@@ -94,17 +104,24 @@ def get_model_list(make: str):
     return model_list
 
 
-def get_vehicle_year():
-    FILE_INFO = os.path.join("vehicle", "vehicles_year.xlsx")
-    data_two = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_INFO))
-    year = data_two["Year"].values.tolist()
+def get_vehicle_year(model):
+    # FILE_INFO = os.path.join("vehicle", "vehicles_year.xlsx")
+    # data_two = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_INFO))
+    # year = data_two["Year"].values.tolist()
+    data_frame = pd.read_pickle('all_vehicles.pkl')
 
-    # remove duplicates
-    sorted_year = sorted(list(dict.fromkeys(year)), reverse=True)
+    # Select first and third columns (year, model)
+    model_year = data_frame[data_frame.columns[[0, 2]]].values.tolist()
+
+    # remove duplicates from list of lists
+    remover_model_dup = [list(tupl) for tupl in { tuple(item) for item in model_year }]
+
+    # get car year for a specific model and descending sort
+    filter_by_model = sorted([i for i in remover_model_dup if i[1] == model], reverse=True)
 
     # this is for the selector on the frontend to display the data
     year_list = []
-    for index in sorted_year:
-        year_list.append(dict(value=index, label=index))
+    for index in filter_by_model:
+        year_list.append(dict(value=index[0], label=index[0]))
 
     return year_list

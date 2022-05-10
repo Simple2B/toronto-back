@@ -61,7 +61,7 @@ def get_model(make: str):
 
 
 @router.get("/year", response_model=YearList, tags=["Vehicle"])
-def get_year():
+def get_year(model: str):
     """Get all years"""
-    vehicle_year_list = get_vehicle_year()
+    vehicle_year_list = get_vehicle_year(model)
     return YearList(vehicle_year_list=vehicle_year_list)
