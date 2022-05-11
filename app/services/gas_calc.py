@@ -2,19 +2,26 @@ import os
 import pandas as pd
 
 from app.config import settings
+from app.logger import log
 
+TOWNS_NAME = ["UK", "United Kingdom"]
 
 def get_gas_cost(gas_file_name: str, town_name: str):
+    log(log.INFO, "[get_gas_cost] with file name [%s], town name[%s]", gas_file_name, town_name)
     # Gasoline Prices in the United Kingdom decreased to 2.04 USD/Liter in April from 2.14 USD/Liter in March of 2022
     # This info take from https://tradingeconomics.com/united-kingdom/gasoline-prices
-    if town_name == "UK" or town_name == "United Kingdom":
+    if town_name in TOWNS_NAME:
+        log(log.INFO, "[if UK or United Kingdom] town name[%s]", town_name)
         # cents per liter
         return 204
 
     if not len(gas_file_name):
+        log(log.INFO, "[if gas_file_name empty] gas_file_name[%s]", gas_file_name)
         return ''
 
-    data = pd.read_excel(os.path.join(settings.DATA_DIR, gas_file_name))
+    # data11 = os.path.join(gas_file_name + ".test")
+    # '/home/azalor/simple2b/toronto-back/data/''Mid-Grade_Gas.xlsx'
+    data = pd.read_excel(os.path.join(settings.DATA_DIR, gas_file_name + ".xlsx"))
     # assert data
     town_price = {}
     HORIZON_OFFSET = 1
@@ -34,10 +41,12 @@ def get_gas_cost(gas_file_name: str, town_name: str):
     # if none of the 8 cities is selected, calculate the average price
     # between them for any others on the planet
     if town_name == "Average":
+        log(log.INFO, "[if no specified city is selected] town_name[%s]", town_name)
         avg = round(sum(town_price.values()) / town_num, 2)
         return avg
 
     if town_name in town_price:
+        log(log.INFO, "[if town_name in town_price] town_name[%s], town_price[town_name][%s]", town_name, town_price[town_name])
         return town_price[town_name]
 
 
@@ -94,7 +103,7 @@ def get_model_list(make: str):
     remover_model_dup = [list(tupl) for tupl in { tuple(item) for item in make_model }]
 
     # get models for a specific car and sort
-    filter_by_make = sorted([i for i in remover_model_dup if i[0] == make])
+    filter_by_make = [i for i in remover_model_dup if i[0] == make]
 
     # this is for the selector on the frontend to display the data
     model_list = []
@@ -117,7 +126,7 @@ def get_vehicle_year(model):
     remover_model_dup = [list(tupl) for tupl in { tuple(item) for item in model_year }]
 
     # get car year for a specific model and descending sort
-    filter_by_model = sorted([i for i in remover_model_dup if i[1] == model], reverse=True)
+    filter_by_model = sorted([i for i in remover_model_dup if model in i], reverse=True)
 
     # this is for the selector on the frontend to display the data
     year_list = []
