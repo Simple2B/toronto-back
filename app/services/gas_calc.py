@@ -50,7 +50,7 @@ def get_gas_cost(gas_file_name: str, town_name: str):
         return town_price[town_name]
 
 
-def get_gas_mileage(model: str, make: str, year: int):
+def get_gas_mileage(make: str, model: str, year: int):
     """Get Miles per gallon (MPL)"""
     # FILE_NAME = os.path.join("vehicle", "vehicles.xlsx")
     # data = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_NAME))

@@ -12,7 +12,7 @@ router = APIRouter()
 
 
 @router.get("/gas_consumption", response_model=CalculationResult, tags=["Calculation"])
-def gas_consumption(model: str, make: str, year: int, town: str, distance: str, gasType: str):
+def gas_consumption(make: str, model: str, year: int, gasType: str, distance: str, town: str):
     """Calculate gas consumption"""
 
     # some data in db can be type int but they come like str
@@ -37,7 +37,7 @@ def gas_consumption(model: str, make: str, year: int, town: str, distance: str, 
             kilometres = float(re.findall("[-+]?\d*\.\d+|\d+", distance)[0]) * 1.60934
 
     cost = get_gas_cost(gas_file_name=gasType, town_name=town) or 0
-    mileage = get_gas_mileage(model=model, make=make, year=year) or 0
+    mileage = get_gas_mileage(make=make, model=model, year=year) or 0
 
     # Cents per litre to dollar per litre
     price_per_litr = cost / 100
