@@ -113,14 +113,14 @@ def get_model_list(make: str):
     return model_list
 
 
-def get_vehicle_year(model):
+def get_vehicle_year(model, make):
     # FILE_INFO = os.path.join("vehicle", "vehicles_year.xlsx")
     # data_two = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_INFO))
     # year = data_two["Year"].values.tolist()
     data_frame = pd.read_pickle('all_vehicles.pkl')
 
     # Select first and third columns (year, model)
-    model_year = data_frame[data_frame.columns[[0, 2]]].values.tolist()
+    model_year = data_frame[data_frame.columns[0:3]].values.tolist()
 
     # remove duplicates from list of lists
     remover_model_dup = [list(tupl) for tupl in { tuple(item) for item in model_year }]
@@ -128,9 +128,12 @@ def get_vehicle_year(model):
     # get car year for a specific model and descending sort
     filter_by_model = sorted([i for i in remover_model_dup if model in i], reverse=True)
 
+    # some models have the same makes
+    rid_extra_models = [i for i in filter_by_model if i[1] == make]
+
     # this is for the selector on the frontend to display the data
     year_list = []
-    for index in filter_by_model:
+    for index in rid_extra_models:
         year_list.append(dict(value=index[0], label=index[0]))
 
     return year_list
