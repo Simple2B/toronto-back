@@ -41,7 +41,8 @@ def gas_consumption(make: str, model: str, year: int, gasType: str, distance: st
 
     # Cents per litre to dollar per litre
     price_per_litr = cost / 100
-    result_price = format(kilometres * mileage / 100 * price_per_litr, ".2f")
+    litre_consump = kilometres / mileage
+    result_price = format(litre_consump * price_per_litr, ".2f")
 
     # CO2 calculalate
     # 1 liter of petrol weighs 750 grammes. Petrol consists for 87% of carbon,
@@ -52,7 +53,7 @@ def gas_consumption(make: str, model: str, year: int, gasType: str, distance: st
     # An average consumption of 5 liters/100 km then corresponds to 5 l x 2392 g/l / 100 (per km) = 120 g CO2/km.
     # https://ecoscore.be/en/info/ecoscore/co2
     # https://www.fleetnews.co.uk/costs/carbon-footprint-calculator/
-    c02_kg = format(kilometres * mileage / 100 * 2.392, ".2f")
+    c02_kg = format(litre_consump * 2.392 / 100 * kilometres, ".2f")
 
     return CalculationResult(gas_price=result_price, c02_kg=c02_kg)
 
