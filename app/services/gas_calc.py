@@ -5,18 +5,23 @@ from app.config import settings
 from app.logger import log
 
 TOWNS_NAME = ["UK", "United Kingdom"]
+# Gasoline Prices in the United Kingdom decreased to 2.04 USD/Liter in April from 2.14 USD/Liter in March of 2022
+# This info take from https://tradingeconomics.com/united-kingdom/gasoline-prices
+# cents per liter
+UK_GAS_PRICE = 204
 
 def get_gas_cost(gas_file_name: str, town_name: str):
     log(log.INFO, "[get_gas_cost] with file name [%s], town name[%s]", gas_file_name, town_name)
-    # Gasoline Prices in the United Kingdom decreased to 2.04 USD/Liter in April from 2.14 USD/Liter in March of 2022
-    # This info take from https://tradingeconomics.com/united-kingdom/gasoline-prices
+
     if town_name in TOWNS_NAME:
         log(log.INFO, "[if UK or United Kingdom] town name[%s]", town_name)
-        # cents per liter
-        return 204
+        if gas_file_name == "UK Prices":
+            return UK_GAS_PRICE
+        else:
+            return 0
 
-    if not len(gas_file_name):
-        log(log.INFO, "[if gas_file_name empty] gas_file_name[%s]", gas_file_name)
+    if not len(gas_file_name) or gas_file_name == "UK Prices":
+        log(log.INFO, "[if gas_file_name empty or it's UK Prices] gas_file_name[%s]", gas_file_name)
         return ''
 
     # data11 = os.path.join(gas_file_name + ".test")
