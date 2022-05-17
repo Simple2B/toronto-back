@@ -23,8 +23,8 @@ def get_gas_cost(gas_file_name: str, town_name: str):
     if not len(gas_file_name) or gas_file_name == "UK Prices":
         log(log.INFO, "[if gas_file_name empty or it's UK Prices] gas_file_name[%s]", gas_file_name)
         return ''
-    # test
-    data = pd.read_excel(os.path.join(settings.DATA_DIR, gas_file_name))
+
+    data = pd.read_excel(os.path.join(settings.DATA_DIR, gas_file_name + ".xlsx"))
     log(log.INFO, "[data] data[%s]", data)
     # assert data
     town_price = {}
