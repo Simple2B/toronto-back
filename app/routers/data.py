@@ -21,12 +21,12 @@ def gas_consumption(make: str, model: str, year: int, gasType: str, distance: st
     except ValueError:
         pass
 
-    # get distance value from string
+    # get distance value (number) from string
     kilometres = float(re.sub('[^0-9.]', "", distance).replace(",", ""))
 
-    # get distance type from string
+    # get distance type (string) from string
     if len(distance) > 1:
-        # data may not be in English
+        # distance data may not be in English
         try:
             distance_type = re.search(r'[a-zA-Z]+', distance).group()
         except AttributeError:
@@ -36,10 +36,13 @@ def gas_consumption(make: str, model: str, year: int, gasType: str, distance: st
         if distance_type == 'miles':
             kilometres = float(re.findall("[-+]?\d*\.\d+|\d+", distance)[0]) * 1.60934
 
+    # get gas price from specific town or country
     cost = get_gas_cost(gas_file_name=gasType, town_name=town) or "wrong_gas_type"
+    # if the input data is incorrect, then sends a message to the front about this
     if cost == "wrong_gas_type":
         return CalculationResult(gas_price=0, c02_kg=0, error=cost)
 
+    # get specific car mileage and co2 consumption
     mileage = get_car_mileage(make=make, model=model, year=year) or "wrong_car_options"
     if mileage == "wrong_car_options":
         return CalculationResult(gas_price=0, c02_kg=0, error=mileage)
@@ -49,15 +52,7 @@ def gas_consumption(make: str, model: str, year: int, gasType: str, distance: st
     litre_consump = kilometres / mileage[0]
     result_price = format(litre_consump * price_per_litr, ".2f")
 
-    # CO2 calculalate
-    # 1 liter of petrol weighs 750 grammes. Petrol consists for 87% of carbon,
-    # or 652 grammes of carbon per liter of petrol.
-    # In order to combust this carbon to CO2, 1740 grammes of oxygen is needed.
-    # The sum is then 652 + 1740 = 2392 grammes of CO2/liter of petrol.
-
-    # An average consumption of 5 liters/100 km then corresponds to 5 l x 2392 g/l / 100 (per km) = 120 g CO2/km.
-    # https://ecoscore.be/en/info/ecoscore/co2
-    # https://www.fleetnews.co.uk/costs/carbon-footprint-calculator/
+    # CO2 consumption in grams to kg for the whole route
     c02_kg = format(mileage[1] / 1000 * kilometres, ".2f")
 
     return CalculationResult(gas_price=result_price, c02_kg=c02_kg)
