@@ -4,7 +4,7 @@ import pandas as pd
 from app.config import settings
 from app.logger import log
 
-TOWNS_NAME = ["UK", "United Kingdom"]
+COUNTRY_NAME = ["UK", "United Kingdom"]
 # Gasoline Prices in the United Kingdom decreased to 2.04 USD/Liter in April from 2.14 USD/Liter in March of 2022
 # This info take from https://tradingeconomics.com/united-kingdom/gasoline-prices
 # cents per liter
@@ -12,8 +12,9 @@ UK_GAS_PRICE = 204
 
 def get_gas_cost(gas_file_name: str, town_name: str):
     log(log.INFO, "[get_gas_cost] with file name [%s], town name[%s]", gas_file_name, town_name)
+    """Calculate gas prices for specific cities or countries"""
 
-    if town_name in TOWNS_NAME:
+    if town_name in COUNTRY_NAME:
         log(log.INFO, "[if UK or United Kingdom] town name[%s]", town_name)
         if gas_file_name == "UK Prices":
             return UK_GAS_PRICE
@@ -25,7 +26,7 @@ def get_gas_cost(gas_file_name: str, town_name: str):
         return ''
 
     data = pd.read_excel(os.path.join(settings.DATA_DIR, gas_file_name + ".xlsx"))
-    log(log.INFO, "[data] data[%s]", data)
+    log(log.INFO, "[pandas successfully read excel file] data: (strings, columns) - %s", data.shape)
     # assert data
     town_price = {}
     HORIZON_OFFSET = 1
@@ -43,7 +44,7 @@ def get_gas_cost(gas_file_name: str, town_name: str):
         town_price[name] = price
 
     # if none of the 8 cities is selected, calculate the average price
-    # between them for any others on the planet
+    # between them for any others on the planet (exclude UK)
     if town_name == "Average":
         log(log.INFO, "[if no specified city is selected] town_name[%s]", town_name)
         avg = round(sum(town_price.values()) / town_num, 2)
@@ -55,16 +56,18 @@ def get_gas_cost(gas_file_name: str, town_name: str):
 
 
 def get_car_mileage(make: str, model: str, year: int):
-    """Get Miles per gallon (MPL)"""
-    # FILE_NAME = os.path.join("vehicle", "vehicles.xlsx")
-    # data = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_NAME))
+    log(log.INFO, "[get_car_mileage] with params make[%s], model[%s], year[%s]", make, model, year)
+    """Get mileage and CO2 consumption for specific car"""
+
     data_frame = pd.read_pickle('all_vehicles.pkl')
+    log(log.INFO, "[get_car_mileage: pandas successfully read pickle file] data_frame: (strings, columns) - %s", data_frame.shape)
 
     assert len(data_frame)
     lines = data_frame.loc[
         (data_frame["Make"] == make) & (data_frame["Model"] == model) & (data_frame["Year"] == year)
     ]
     if not len(lines):
+        log(log.INFO, "[get_car_mileage: lines didn't find matching parameters] len(lines)[%s]", len(lines))
         return None
     # get average value from same vehicle with different mileage and emissions
     mean = lines[["City", "Highway"]].mean()
@@ -75,15 +78,17 @@ def get_car_mileage(make: str, model: str, year: int):
     # Convert Miles per gallon (MPL) to kilometres per litre (KPL)
     kpl = avg_mileage / 2.352
 
+    log(log.INFO, "[function get_car_mileage output] [kpl, co2][%s]", [kpl, co2])
     return [kpl, co2]
 
 
 def get_make_list():
-    # FILE_NAME = os.path.join("vehicle", "all_vehicles-binary.xlsb")
-    # data = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_NAME))
+    """Get the full list of makes"""
 
     # data.to_pickle('all_vehicles.pkl')    #to save the dataframe to file.pkl
     data_frame = pd.read_pickle('all_vehicles.pkl') #to load file.pkl back to the dataframe
+    log(log.INFO, "[get_make_list: pandas successfully read pickle file] data_frame: (strings, columns) - %s", data_frame.shape)
+
     make = sorted(data_frame["Make"].values.tolist())
 
     # remove duplicates
@@ -94,13 +99,16 @@ def get_make_list():
     for index in sorted_make:
         make_list.append(dict(value=index, label=index))
 
+    log(log.INFO, "[function get_make_list output] make_list length[%s]", len(make_list))
     return make_list
 
 
 def get_model_list(make: str):
-    # FILE_NAME = os.path.join("vehicle", "vehicles.xlsx")
-    # data = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_NAME))
+    log(log.INFO, "[get_model_list] with params make[%s]", make)
+    """Get models list for a specific car"""
+
     data_frame = pd.read_pickle('all_vehicles.pkl')
+    log(log.INFO, "[get_model_list: pandas successfully read pickle file] data_frame: (strings, columns) - %s", data_frame.shape)
 
     # Select second and third columns (make, model)
     make_model = data_frame[data_frame.columns[1:3]].values.tolist()
@@ -116,16 +124,18 @@ def get_model_list(make: str):
     for index in filter_by_make:
         model_list.append(dict(value=index[1], label=index[1]))
 
+    log(log.INFO, "[function get_model_list output] model_list length[%s]", len(model_list))
     return model_list
 
 
 def get_vehicle_year(model, make):
-    # FILE_INFO = os.path.join("vehicle", "vehicles_year.xlsx")
-    # data_two = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_INFO))
-    # year = data_two["Year"].values.tolist()
-    data_frame = pd.read_pickle('all_vehicles.pkl')
+    log(log.INFO, "[get_vehicle_year] with params model[%s], make[%s]", model, make)
+    """Get years list for a specific car model"""
 
-    # Select first and third columns (year, model)
+    data_frame = pd.read_pickle('all_vehicles.pkl')
+    log(log.INFO, "[get_vehicle_year: pandas successfully read pickle file] data_frame: (strings, columns) - %s", data_frame.shape)
+
+    # Select first three columns (year, make, model)
     model_year = data_frame[data_frame.columns[0:3]].values.tolist()
 
     # remove duplicates from list of lists
@@ -142,4 +152,5 @@ def get_vehicle_year(model, make):
     for index in rid_extra_models:
         year_list.append(dict(value=index[0], label=index[0]))
 
+    log(log.INFO, "[function get_vehicle_year output] year_list length[%s]", len(year_list))
     return year_list
