@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 
 
@@ -12,8 +13,9 @@ class CalculationData(VehicleData):
 
 
 class CalculationResult(BaseModel):
-    gas_price: float
-    c02_kg: float
+    gas_price: Optional[float]
+    c02_kg: Optional[float]
+    error: Optional[str]
 
 
 class MakeList(BaseModel):

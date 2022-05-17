@@ -36,8 +36,13 @@ def gas_consumption(make: str, model: str, year: int, gasType: str, distance: st
         if distance_type == 'miles':
             kilometres = float(re.findall("[-+]?\d*\.\d+|\d+", distance)[0]) * 1.60934
 
-    cost = get_gas_cost(gas_file_name=gasType, town_name=town) or 0
-    mileage = get_car_mileage(make=make, model=model, year=year) or 0
+    cost = get_gas_cost(gas_file_name=gasType, town_name=town) or "wrong_gas_type"
+    if cost == "wrong_gas_type":
+        return CalculationResult(gas_price=0, c02_kg=0, error=cost)
+
+    mileage = get_car_mileage(make=make, model=model, year=year) or "wrong_car_options"
+    if mileage == "wrong_car_options":
+        return CalculationResult(gas_price=0, c02_kg=0, error=mileage)
 
     # Cents per litre to dollar per litre
     price_per_litr = cost / 100
