@@ -55,7 +55,7 @@ def get_gas_cost(gas_file_name: str, town_name: str):
         return town_price[town_name]
 
 
-def get_gas_mileage(make: str, model: str, year: int):
+def get_car_mileage(make: str, model: str, year: int):
     """Get Miles per gallon (MPL)"""
     # FILE_NAME = os.path.join("vehicle", "vehicles.xlsx")
     # data = pd.read_excel(os.path.join(settings.DATA_DIR, FILE_NAME))
@@ -67,14 +67,16 @@ def get_gas_mileage(make: str, model: str, year: int):
     ]
     if not len(lines):
         return None
+    # get average value from same vehicle with different mileage and emissions
     mean = lines[["City", "Highway"]].mean()
+    co2 = lines["co2TailpipeGpm"].mean()
 
     avg_mileage = (mean.City + mean.Highway) / 2
 
     # Convert Miles per gallon (MPL) to kilometres per litre (KPL)
     kpl = avg_mileage / 2.352
 
-    return kpl
+    return [kpl, co2]
 
 
 def get_make_list():

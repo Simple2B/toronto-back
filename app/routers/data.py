@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from app.schemas import CalculationResult
 from app.schemas.vehicle import MakeList, ModelList, YearList
-from app.services import get_gas_cost, get_gas_mileage
+from app.services import get_gas_cost, get_car_mileage
 from app.services.gas_calc import get_make_list, get_model_list, get_vehicle_year
 import re
 from app.logger import log
@@ -37,11 +37,11 @@ def gas_consumption(make: str, model: str, year: int, gasType: str, distance: st
             kilometres = float(re.findall("[-+]?\d*\.\d+|\d+", distance)[0]) * 1.60934
 
     cost = get_gas_cost(gas_file_name=gasType, town_name=town) or 0
-    mileage = get_gas_mileage(make=make, model=model, year=year) or 0
+    mileage = get_car_mileage(make=make, model=model, year=year) or 0
 
     # Cents per litre to dollar per litre
     price_per_litr = cost / 100
-    litre_consump = kilometres / mileage
+    litre_consump = kilometres / mileage[0]
     result_price = format(litre_consump * price_per_litr, ".2f")
 
     # CO2 calculalate
@@ -53,7 +53,7 @@ def gas_consumption(make: str, model: str, year: int, gasType: str, distance: st
     # An average consumption of 5 liters/100 km then corresponds to 5 l x 2392 g/l / 100 (per km) = 120 g CO2/km.
     # https://ecoscore.be/en/info/ecoscore/co2
     # https://www.fleetnews.co.uk/costs/carbon-footprint-calculator/
-    c02_kg = format(litre_consump * 2.392 / 100 * kilometres, ".2f")
+    c02_kg = format(mileage[1] / 1000 * kilometres, ".2f")
 
     return CalculationResult(gas_price=result_price, c02_kg=c02_kg)
 
