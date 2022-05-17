@@ -24,7 +24,8 @@ def get_gas_cost(gas_file_name: str, town_name: str):
         log(log.INFO, "[if gas_file_name empty or it's UK Prices] gas_file_name[%s]", gas_file_name)
         return ''
 
-    data = pd.read_excel(os.path.join(settings.DATA_DIR, gas_file_name + ".xlsx"))
+    data = pd.read_excel(os.path.join(settings.DATA_DIR, gas_file_name))
+    log(log.INFO, "[data] data[%s]", data)
     # assert data
     town_price = {}
     HORIZON_OFFSET = 1
