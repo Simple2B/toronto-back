@@ -14,6 +14,17 @@
             ],
             "jinja": true,
             "justMyCode": true
-        }
+        },
+        {
+          "name": "Debug update",
+          "type": "python",
+          "request": "launch",
+          "module": "invoke",
+          "args": [
+              "update"
+          ],
+          "jinja": true,
+          "justMyCode": true
+      }
     ]
 }
