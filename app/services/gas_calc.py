@@ -24,8 +24,6 @@ def get_gas_cost(gas_file_name: str, town_name: str):
         log(log.INFO, "[if gas_file_name empty or it's UK Prices] gas_file_name[%s]", gas_file_name)
         return ''
 
-    # data11 = os.path.join(gas_file_name + ".test")
-    # '/home/azalor/simple2b/toronto-back/data/''Mid-Grade_Gas.xlsx'
     data = pd.read_excel(os.path.join(settings.DATA_DIR, gas_file_name + ".xlsx"))
     # assert data
     town_price = {}
