@@ -40,7 +40,7 @@ def test_input_data(vahicle: TestClient):
     response = vahicle.get(
         "/api/gas_consumption",
         params=dict(
-            make="Honda", model="Odyssey", year=2022, gasType="UK Prices", distance="100 km", town="Toronto"),
+            make="Honda", model="Odyssey", year=2022, gasType="UK", distance="100 km", town="Toronto"),
     )
     assert response.status_code == 200
     res: CalculationResult = CalculationResult.parse_obj(response.json())
