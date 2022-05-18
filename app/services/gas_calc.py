@@ -4,7 +4,7 @@ import pandas as pd
 from app.config import settings
 from app.logger import log
 
-UK_TOWNS_NAME = ["London", "Manchester", "Birmingham", "Wolverhampton", "Leeds", "Bradford", "Glasgow", "Southampton", "Portsmouth", "Liverpool", "Newcastle", "Nottingham", "Sheffield", "Bristol", "Belfast", "Leicester", "Edinburgh"]
+UK_LIST = ["United Kingdom", "UK"]
 # Gasoline Prices in the United Kingdom decreased to 2.04 USD/Liter in April from 2.14 USD/Liter in March of 2022
 # This info take from https://tradingeconomics.com/united-kingdom/gasoline-prices
 # cents per liter
@@ -14,14 +14,14 @@ def get_gas_cost(gas_file_name: str, town_name: str):
     log(log.INFO, "[get_gas_cost] with file name [%s], town name[%s]", gas_file_name, town_name)
     """Calculate gas prices for specific cities or countries"""
 
-    if town_name in UK_TOWNS_NAME:
+    if town_name in UK_LIST:
         log(log.INFO, "[if UK or United Kingdom] town name[%s]", town_name)
         if gas_file_name == "UK":
             return UK_GAS_PRICE
         else:
             return 0
 
-    if not len(gas_file_name):
+    if not len(gas_file_name) or gas_file_name == "UK":
         log(log.INFO, "[if gas_file_name empty or it's UK] gas_file_name[%s]", gas_file_name)
         return ''
 
