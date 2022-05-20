@@ -13,6 +13,7 @@ router = APIRouter()
 
 @router.get("/gas_consumption", response_model=CalculationResult, tags=["Calculation"])
 def gas_consumption(make: str, model: str, year: int, gasType: str, distance: str, town: str):
+    log(log.INFO, "[CALCULATION INPUT] make[%s], model[%s], year[%s], gasType[%s], distance[%s], town[%s]", make, model, year, gasType, distance, town)
     """Calculate gas consumption"""
 
     # some data in db can be type int but they come like str
@@ -55,7 +56,7 @@ def gas_consumption(make: str, model: str, year: int, gasType: str, distance: st
     # CO2 consumption in grams to kg for the whole route
     c02_kg = format(mileage[1] / 1000 * kilometres, ".2f")
 
-    log(log.INFO, "[CALCULATION RESULTS] result_price[%s], c02_kg[%s]", result_price, c02_kg)
+    log(log.INFO, "[CALCULATION OUTPUT] result_price[%s], c02_kg[%s]", result_price, c02_kg)
     return CalculationResult(gas_price=result_price, c02_kg=c02_kg)
 
 
