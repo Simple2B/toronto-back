@@ -1,3 +1,4 @@
+import fastapi as _fastapi
 from fastapi import APIRouter
 
 from app.schemas import CalculationResult
@@ -7,8 +8,23 @@ from app.services.gas_calc import get_make_list, get_model_list, get_vehicle_yea
 import re
 from app.logger import log
 
+from fastapi import security as _security
+import app.db_session as _services
+import app.schemas.user as _schemas
+import sqlalchemy.orm as _orm
+
+
 
 router = APIRouter()
+
+
+@router.post("/users")
+async def create_user(user: _schemas.UserCreate, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    db_user = await _services.get_user_by_email(user.email, db)
+    if db_user:
+        raise _fastapi.HTTPException(status_code=400, detail="Email already in use")
+
+    return await _services.create_user(user, db)
 
 
 @router.get("/gas_consumption", response_model=CalculationResult, tags=["Calculation"])
