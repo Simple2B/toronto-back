@@ -27,6 +27,21 @@ async def create_user(user: _schemas.UserCreate, db: _orm.Session = _fastapi.Dep
     return await _services.create_user(user, db)
 
 
+@router.post("/token")
+async def generate_token(form_data: _security.OAuth2PasswordRequestForm = _fastapi.Depends(), db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    user = await _services.authenticate_user(form_data.username, form_data.password, db)
+
+    if not user:
+        raise _fastapi.HTTPException(status_code=401, detail="Invalid Credentials")
+
+    return await _services.create_token(user)
+
+
+@router.get("/users/user", response_model=_schemas.User)
+async def get_user(user: _schemas.User = _fastapi.Depends(_services.get_current_user)):
+    return user
+
+
 @router.get("/gas_consumption", response_model=CalculationResult, tags=["Calculation"])
 def gas_consumption(make: str, model: str, year: int, gasType: str, distance: str, town: str):
     log(log.INFO, "[CALCULATION INPUT] make[%s], model[%s], year[%s], gasType[%s], distance[%s], town[%s]", make, model, year, gasType, distance, town)
